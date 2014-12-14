@@ -1,5 +1,6 @@
 import sys
 import os
+import logging
 from PyQt4 import QtGui, QtCore
 
 import sorter
@@ -29,12 +30,12 @@ class MyWidget(QtGui.QWidget):
         source_btn = QtGui.QPushButton('Source', self)
         source_btn.setToolTip('Select an iphoto library to parse')
         source_btn.resize(source_btn.sizeHint())
-        source_btn.clicked.connect(lambda: self.select_lib(self.libpath))
+        source_btn.clicked.connect(self.select_lib)
 
         target_btn = QtGui.QPushButton('Target', self)
         target_btn.setToolTip('Select target directory')
         target_btn.resize(target_btn.sizeHint())
-        target_btn.clicked.connect(lambda: self.select_lib(self.target_dir))
+        target_btn.clicked.connect(self.select_target)
 
         parse_btn = QtGui.QPushButton('Parse!', self)
         parse_btn.setToolTip('Parse selected iphoto library')
@@ -57,9 +58,14 @@ class MyWidget(QtGui.QWidget):
     def parse_lib(self):
         sorter.parse_files(self.libpath, self.target_dir)
 
-    def select_lib(self, x):
-        x = QtGui.QFileDialog.getOpenFileName(self, 'Open file',
-                x)
+    def select_lib(self):
+        self.libpath = QtGui.QFileDialog.getOpenFileName(
+            self, 'Open file', self.libpath)
+        logging.info('Set libpath to %s', self.libpath)
+
+    def select_target(self):
+        self.libpath = QtGui.QFileDialog.getExistingDirectory(
+            self, 'Select USB Drive Location', self.target_dir)
 
 
 def MainWindow(app):
@@ -72,4 +78,5 @@ def main():
     MainWindow(app)
 
 if __name__ == '__main__':
+    logging.basicConfig(level='INFO')
     main()
