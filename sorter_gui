@@ -16,7 +16,7 @@ class SorterGUI(QtGui.QMainWindow):
 
         self.setToolTip('This is a <b>QWidget</b> widget')
         self.setCentralWidget(MyWidget())
-        self.setGeometry(300, 300, 250, 150)
+        self.setGeometry(300, 300, 500, 150)
         self.setWindowTitle('Tooltips')
         self.show()
 
@@ -31,11 +31,20 @@ class MyWidget(QtGui.QWidget):
         source_btn.setToolTip('Select an iphoto library to parse')
         source_btn.resize(source_btn.sizeHint())
         source_btn.clicked.connect(self.select_lib)
+        source_qle = QtGui.QLineEdit(self)
+        source_hbox = QtGui.QHBoxLayout()
+        source_hbox.stretch(1)
+        source_hbox.addWidget(source_btn)
+        source_hbox.addWidget(source_qle)
 
         target_btn = QtGui.QPushButton('Target', self)
         target_btn.setToolTip('Select target directory')
         target_btn.resize(target_btn.sizeHint())
         target_btn.clicked.connect(self.select_target)
+        target_qle = QtGui.QLineEdit(self)
+        target_hbox = QtGui.QHBoxLayout()
+        target_hbox.addWidget(target_btn)
+        target_hbox.addWidget(target_qle)
 
         parse_btn = QtGui.QPushButton('Parse!', self)
         parse_btn.setToolTip('Parse selected iphoto library')
@@ -49,10 +58,12 @@ class MyWidget(QtGui.QWidget):
 
         vbox = QtGui.QVBoxLayout()
         vbox.addStretch(1)
-        vbox.addWidget(source_btn)
-        vbox.addWidget(target_btn)
-        vbox.addWidget(parse_btn)
-        vbox.addWidget(quit_btn)
+        vbox.addLayout(source_hbox)
+        vbox.addLayout(target_hbox)
+        hbox = QtGui.QHBoxLayout()
+        hbox.addWidget(parse_btn)
+        hbox.addWidget(quit_btn)
+        vbox.addLayout(hbox)
         self.setLayout(vbox)
 
     def parse_lib(self):
