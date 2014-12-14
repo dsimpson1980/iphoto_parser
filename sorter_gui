@@ -26,7 +26,7 @@ class MyWidget(QtGui.QWidget):
     def __init__(self):
         source_path = os.path.expanduser('~/Pictures/iPhoto Library.photolibrary')
         target_dir = os.path.expanduser('~/Pictures/parser_output')
-        self.filter_by_model = False
+        self.filter_by_model = QtGui.QCheckBox('Filter by Model')
 
         QtGui.QWidget.__init__(self)
         self.source_qle = QtGui.QLineEdit(self)
@@ -64,6 +64,7 @@ class MyWidget(QtGui.QWidget):
         vbox.addStretch(1)
         vbox.addLayout(source_hbox)
         vbox.addLayout(target_hbox)
+        vbox.addWidget(self.filter_by_model)
         hbox = QtGui.QHBoxLayout()
         hbox.addWidget(parse_btn)
         hbox.addWidget(quit_btn)
@@ -74,7 +75,7 @@ class MyWidget(QtGui.QWidget):
         fields = ['source_path', 'export_dir', 'filter_by_model']
         Args = collections.namedtuple('Args', fields)
         args = Args(str(self.source_qle.text()), str(self.target_qle.text()),
-                    self.filter_by_model)
+                    self.filter_by_model.isChecked())
         sorter.parse_files(args)
 
     def select_lib(self):

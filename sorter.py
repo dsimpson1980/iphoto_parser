@@ -3,7 +3,6 @@
 import os
 import subprocess
 import logging
-import collections
 
 """script to split iphoto database into directory structure by file metadata
 dates; year, month, day
