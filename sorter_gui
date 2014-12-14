@@ -1,13 +1,16 @@
 import sys
 from PyQt4 import QtGui, QtCore
 
+import sorter
+
 
 class SorterGUI(QtGui.QMainWindow):
 
     def __init__(self):
         super(SorterGUI, self).__init__()
+        self.libpath = None
+        self.target_dir = None
         self.initUI()
-        self.filepath = None
 
     def initUI(self):
         QtGui.QToolTip.setFont(QtGui.QFont('SansSerif', 10))
@@ -18,12 +21,13 @@ class SorterGUI(QtGui.QMainWindow):
         open_btn.setToolTip('Select an iphoto library to parse')
         open_btn.resize(open_btn.sizeHint())
         open_btn.move(50, 25)
-        open_btn.clicked.connect(self.select_file)
+        open_btn.clicked.connect(self.select_lib)
 
         parse_btn = QtGui.QPushButton('Parse!', self)
         parse_btn.setToolTip('Parse selected iphoto library')
         parse_btn.resize(parse_btn.sizeHint())
         parse_btn.move(50, 50)
+        parse_btn.clicked.connect(self.parse_lib)
 
         quit_btn = QtGui.QPushButton('Quit', self)
         quit_btn.setToolTip('Quit iphoto parser')
@@ -35,8 +39,11 @@ class SorterGUI(QtGui.QMainWindow):
         self.setWindowTitle('Tooltips')
         self.show()
 
-    def select_file(self):
-        self.filepath = QtGui.QFileDialog.getOpenFileName(self, 'Open file',
+    def parse_lib(self):
+        sorter.parse_files(self.libpath, self.target_dir)
+
+    def select_lib(self):
+        self.libpath = QtGui.QFileDialog.getOpenFileName(self, 'Open file',
                 '/home')
 
 
@@ -46,7 +53,7 @@ def MainWindow(app):
 
 def main():
     app = QtGui.QApplication(sys.argv)
-    sorter = SorterGUI()
+    sorter_gui = SorterGUI()
     MainWindow(app)
 
 if __name__ == '__main__':

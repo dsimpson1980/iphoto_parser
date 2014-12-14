@@ -46,6 +46,10 @@ def parse_cmdline():
     return args
 
 
+def parse_files(libpath, args):
+    os.path.walk(libpath, move_files, args)
+
+
 def move_files(args, dirname, filenames):
     import pandas
     import re
@@ -76,7 +80,7 @@ def move_files(args, dirname, filenames):
 def main():
     args = parse_cmdline()
     logging.basicConfig(datefmt='%y-%m-%d', level=args.log_level)
-    os.path.walk(args.libpath, move_files, args)
+    parse_files(args.libpath, args)
 
 if __name__ == '__main__':
     main()
