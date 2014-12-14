@@ -1,4 +1,5 @@
 import sys
+import os
 from PyQt4 import QtGui, QtCore
 
 import sorter
@@ -8,49 +9,61 @@ class SorterGUI(QtGui.QMainWindow):
 
     def __init__(self):
         super(SorterGUI, self).__init__()
-        self.libpath = None
-        self.target_dir = None
         self.initUI()
 
     def initUI(self):
-        QtGui.QToolTip.setFont(QtGui.QFont('SansSerif', 10))
 
         self.setToolTip('This is a <b>QWidget</b> widget')
+        self.setCentralWidget(MyWidget())
+        self.setGeometry(300, 300, 250, 150)
+        self.setWindowTitle('Tooltips')
+        self.show()
 
+
+class MyWidget(QtGui.QWidget):
+    def __init__(self):
+        self.libpath = os.path.expanduser('~/Pictures')
+        self.target_dir = os.path.expanduser('~/Pictures')
+
+        QtGui.QWidget.__init__(self)
         source_btn = QtGui.QPushButton('Source', self)
         source_btn.setToolTip('Select an iphoto library to parse')
         source_btn.resize(source_btn.sizeHint())
-        source_btn.move(50, 25)
-        source_btn.clicked.connect(self.select_lib)
+        # source_btn.move(50, 25)
+        source_btn.clicked.connect(lambda: self.select_lib(self.libpath))
 
         target_btn = QtGui.QPushButton('Target', self)
         target_btn.setToolTip('Select target directory')
         target_btn.resize(target_btn.sizeHint())
-        target_btn.move(50, 50)
-        target_btn.clicked.connect(self.select_lib)
+        # target_btn.move(50, 50)
+        target_btn.clicked.connect(lambda: self.select_lib(self.target_dir))
 
         parse_btn = QtGui.QPushButton('Parse!', self)
         parse_btn.setToolTip('Parse selected iphoto library')
         parse_btn.resize(parse_btn.sizeHint())
-        parse_btn.move(50, 75)
+        # parse_btn.move(50, 75)
         parse_btn.clicked.connect(self.parse_lib)
 
         quit_btn = QtGui.QPushButton('Quit', self)
         quit_btn.setToolTip('Quit iphoto parser')
         quit_btn.resize(quit_btn.sizeHint())
-        quit_btn.move(50, 100)
+        # quit_btn.move(50, 100)
         quit_btn.clicked.connect(QtCore.QCoreApplication.instance().quit)
 
-        self.setGeometry(300, 300, 250, 150)
-        self.setWindowTitle('Tooltips')
-        self.show()
+        vbox = QtGui.QVBoxLayout()
+        vbox.addStretch(1)
+        vbox.addWidget(source_btn)
+        vbox.addWidget(target_btn)
+        vbox.addWidget(parse_btn)
+        vbox.addWidget(quit_btn)
+        self.setLayout(vbox)
 
     def parse_lib(self):
         sorter.parse_files(self.libpath, self.target_dir)
 
     def select_lib(self, x):
         x = QtGui.QFileDialog.getOpenFileName(self, 'Open file',
-                '/home')
+                x)
 
 
 def MainWindow(app):
