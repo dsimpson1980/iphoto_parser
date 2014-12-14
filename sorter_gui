@@ -23,30 +23,30 @@ class SorterGUI(QtGui.QMainWindow):
 
 class MyWidget(QtGui.QWidget):
     def __init__(self):
-        self.source_path = os.path.expanduser('~/Pictures/iPhoto Library.photolibrary')
-        self.target_dir = os.path.expanduser('~/Pictures/parser_output')
+        source_path = os.path.expanduser('~/Pictures/iPhoto Library.photolibrary')
+        target_dir = os.path.expanduser('~/Pictures/parser_output')
 
         QtGui.QWidget.__init__(self)
-        source_qle = QtGui.QLineEdit(self)
-        source_qle.setText(self.source_path)
+        self.source_qle = QtGui.QLineEdit(self)
+        self.source_qle.setText(source_path)
         source_btn = QtGui.QPushButton('Source', self)
         source_btn.setToolTip('Select an iphoto library to parse')
         source_btn.resize(source_btn.sizeHint())
-        source_btn.clicked.connect(lambda: self.select_lib(source_qle))
+        source_btn.clicked.connect(self.select_lib)
         source_hbox = QtGui.QHBoxLayout()
         source_hbox.stretch(1)
         source_hbox.addWidget(source_btn)
-        source_hbox.addWidget(source_qle)
+        source_hbox.addWidget(self.source_qle)
 
-        target_qle = QtGui.QLineEdit(self)
-        target_qle.setText(self.target_dir)
+        self.target_qle = QtGui.QLineEdit(self)
+        self.target_qle.setText(target_dir)
         target_btn = QtGui.QPushButton('Target', self)
         target_btn.setToolTip('Select target directory')
         target_btn.resize(target_btn.sizeHint())
         target_btn.clicked.connect(self.select_target)
         target_hbox = QtGui.QHBoxLayout()
         target_hbox.addWidget(target_btn)
-        target_hbox.addWidget(target_qle)
+        target_hbox.addWidget(self.target_qle)
 
         parse_btn = QtGui.QPushButton('Parse!', self)
         parse_btn.setToolTip('Parse selected iphoto library')
@@ -71,15 +71,17 @@ class MyWidget(QtGui.QWidget):
     def parse_lib(self):
         sorter.parse_files(self.source_path, self.target_dir)
 
-    def select_lib(self, textBox):
-        self.source_path = QtGui.QFileDialog.getOpenFileName(
-            self, 'Open file', self.source_path)
-        textBox.setText(self.source_path)
-        logging.info('Set libpath to %s', self.source_path)
+    def select_lib(self):
+        filepath = QtGui.QFileDialog.getOpenFileName(
+            self, 'Open file', self.source_qle.text())
+        self.source_qle.setText(filepath)
+        logging.info('Set libpath to %s', self.source_qle.text())
 
     def select_target(self):
-        self.source_path = QtGui.QFileDialog.getExistingDirectory(
-            self, 'Select USB Drive Location', self.target_dir)
+        dirpath = QtGui.QFileDialog.getExistingDirectory(
+            self, 'Select USB Drive Location', self.target_qle.text())
+        self.target_qle.setText(dirpath)
+        logging.info('Set target directory to %s', self.source_qle.text())
 
 
 def MainWindow(app):
