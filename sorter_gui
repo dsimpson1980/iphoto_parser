@@ -7,6 +7,7 @@ class SorterGUI(QtGui.QMainWindow):
     def __init__(self):
         super(SorterGUI, self).__init__()
         self.initUI()
+        self.filepath = None
 
     def initUI(self):
         QtGui.QToolTip.setFont(QtGui.QFont('SansSerif', 10))
@@ -17,6 +18,7 @@ class SorterGUI(QtGui.QMainWindow):
         open_btn.setToolTip('Select an iphoto library to parse')
         open_btn.resize(open_btn.sizeHint())
         open_btn.move(50, 25)
+        open_btn.clicked.connect(self.select_file)
 
         parse_btn = QtGui.QPushButton('Parse!', self)
         parse_btn.setToolTip('Parse selected iphoto library')
@@ -32,6 +34,10 @@ class SorterGUI(QtGui.QMainWindow):
         self.setGeometry(300, 300, 250, 150)
         self.setWindowTitle('Tooltips')
         self.show()
+
+    def select_file(self):
+        self.filepath = QtGui.QFileDialog.getOpenFileName(self, 'Open file',
+                '/home')
 
 
 def MainWindow(app):
