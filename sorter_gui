@@ -29,25 +29,21 @@ class MyWidget(QtGui.QWidget):
         source_btn = QtGui.QPushButton('Source', self)
         source_btn.setToolTip('Select an iphoto library to parse')
         source_btn.resize(source_btn.sizeHint())
-        # source_btn.move(50, 25)
         source_btn.clicked.connect(lambda: self.select_lib(self.libpath))
 
         target_btn = QtGui.QPushButton('Target', self)
         target_btn.setToolTip('Select target directory')
         target_btn.resize(target_btn.sizeHint())
-        # target_btn.move(50, 50)
         target_btn.clicked.connect(lambda: self.select_lib(self.target_dir))
 
         parse_btn = QtGui.QPushButton('Parse!', self)
         parse_btn.setToolTip('Parse selected iphoto library')
         parse_btn.resize(parse_btn.sizeHint())
-        # parse_btn.move(50, 75)
         parse_btn.clicked.connect(self.parse_lib)
 
         quit_btn = QtGui.QPushButton('Quit', self)
         quit_btn.setToolTip('Quit iphoto parser')
         quit_btn.resize(quit_btn.sizeHint())
-        # quit_btn.move(50, 100)
         quit_btn.clicked.connect(QtCore.QCoreApplication.instance().quit)
 
         vbox = QtGui.QVBoxLayout()
