@@ -3,6 +3,7 @@
 import os
 import subprocess
 import logging
+import collections
 
 """script to split iphoto database into directory structure by file metadata
 dates; year, month, day
@@ -24,9 +25,11 @@ def get_metadata(filepath):
     import ExifTags
 
     img = Image.open(filepath)
-    exif = {ExifTags.TAGS[k]: v for k, v in img._getexif().items()
-            if k in ExifTags.TAGS}
-    return exif
+    if img._getexif():
+        exif = {ExifTags.TAGS[k]: v for k, v in img._getexif().items()
+                if k in ExifTags.TAGS}
+        return exif
+    return None
 
 
 def parse_cmdline():
@@ -46,12 +49,11 @@ def parse_cmdline():
     return args
 
 
-def parse_files(libpath, args):
-    os.path.walk(libpath, move_files, args)
+def parse_files(args):
+    os.path.walk(args.source_path, move_files, args)
 
 
 def move_files(args, dirname, filenames):
-    import pandas
     import re
     import fnmatch
 
@@ -63,6 +65,8 @@ def move_files(args, dirname, filenames):
     for filename in filenames:
         filepath = os.path.join(dirname, filename)
         metadata = get_metadata(filepath)
+        if not metadata:
+            continue
         datetime = metadata.get('DateTime', '')
         timestamp = None if datetime == '' else parse_timestamp(datetime)
         timestamp_dir = '' if timestamp is None else os.path.join(
@@ -80,7 +84,7 @@ def move_files(args, dirname, filenames):
 def main():
     args = parse_cmdline()
     logging.basicConfig(datefmt='%y-%m-%d', level=args.log_level)
-    parse_files(args.libpath, args)
+    parse_files(args.libpath)
 
 if __name__ == '__main__':
     main()

@@ -1,6 +1,7 @@
 import sys
 import os
 import logging
+import collections
 from PyQt4 import QtGui, QtCore
 
 import sorter
@@ -25,6 +26,7 @@ class MyWidget(QtGui.QWidget):
     def __init__(self):
         source_path = os.path.expanduser('~/Pictures/iPhoto Library.photolibrary')
         target_dir = os.path.expanduser('~/Pictures/parser_output')
+        self.filter_by_model = False
 
         QtGui.QWidget.__init__(self)
         self.source_qle = QtGui.QLineEdit(self)
@@ -69,7 +71,11 @@ class MyWidget(QtGui.QWidget):
         self.setLayout(vbox)
 
     def parse_lib(self):
-        sorter.parse_files(self.source_path, self.target_dir)
+        fields = ['source_path', 'export_dir', 'filter_by_model']
+        Args = collections.namedtuple('Args', fields)
+        args = Args(str(self.source_qle.text()), str(self.target_qle.text()),
+                    self.filter_by_model)
+        sorter.parse_files(args)
 
     def select_lib(self):
         filepath = QtGui.QFileDialog.getOpenFileName(
