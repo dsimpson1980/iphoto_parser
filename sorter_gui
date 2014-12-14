@@ -13,10 +13,15 @@ class SorterGUI(QtGui.QWidget):
 
         self.setToolTip('This is a <b>QWidget</b> widget')
 
-        open_button = QtGui.QPushButton('Open', self)
-        open_button.setToolTip('Select an iphoto library to parse')
-        open_button.resize(open_button.sizeHint())
-        open_button.move(50, 50)
+        open_btn = QtGui.QPushButton('Open', self)
+        open_btn.setToolTip('Select an iphoto library to parse')
+        open_btn.resize(open_btn.sizeHint())
+        open_btn.move(50, 50)
+
+        quit_btn = QtGui.QPushButton('Quit', self)
+        quit_btn.setToolTip('Quit iphoto parser')
+        quit_btn.resize(quit_btn.sizeHint())
+        quit_btn.move(100, 50)
 
         self.setGeometry(300, 300, 250, 150)
         self.setWindowTitle('Tooltips')
