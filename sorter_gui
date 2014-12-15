@@ -17,34 +17,31 @@ class QtHandler(logging.Handler):
         # originally: XStream.stdout().write("{}\n".format(record))
 
 
-logger = logging.getLogger(__name__)
-handler = QtHandler()
-handler.setFormatter(logging.Formatter("%(levelname)s: %(message)s"))
-logger.addHandler(handler)
-logger.setLevel(logging.DEBUG)
-
-
 class XStream(QtCore.QObject):
     _stdout = None
     _stderr = None
     messageWritten = QtCore.pyqtSignal(str)
 
-    def flush( self ):
+    def flush(self):
         pass
-    def fileno( self ):
+
+    def fileno(self):
         return -1
-    def write( self, msg ):
-        if ( not self.signalsBlocked() ):
+
+    def write(self, msg):
+        if (not self.signalsBlocked()):
             self.messageWritten.emit(unicode(msg))
+
     @staticmethod
     def stdout():
-        if ( not XStream._stdout ):
+        if (not XStream._stdout):
             XStream._stdout = XStream()
             sys.stdout = XStream._stdout
         return XStream._stdout
+
     @staticmethod
     def stderr():
-        if ( not XStream._stderr ):
+        if (not XStream._stderr):
             XStream._stderr = XStream()
             sys.stderr = XStream._stderr
         return XStream._stderr
@@ -121,13 +118,6 @@ class MyWidget(QtGui.QWidget):
         XStream.stdout().messageWritten.connect(self._console.insertPlainText)
         XStream.stderr().messageWritten.connect(self._console.insertPlainText)
 
-    def test( self ):
-        logger.debug('debug message')
-        logger.info('info message')
-        logger.warning('warning message')
-        logger.error('error message')
-        print 'Old school hand made print message'
-
     def parse_lib(self):
         fields = ['source_path', 'export_dir', 'filter_by_model']
         Args = collections.namedtuple('Args', fields)
@@ -159,4 +149,8 @@ def main():
 
 if __name__ == '__main__':
     logging.basicConfig(level='INFO')
+    handler = QtHandler()
+    handler.setFormatter(logging.Formatter("%(levelname)s: %(message)s"))
+    logging.basicConfig(level='INFO')
+    logging.getLogger('').addHandler(handler)
     main()
