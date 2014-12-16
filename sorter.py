@@ -13,10 +13,13 @@ Overwrites files in directory of they exist
 
 
 def parse_timestamp(timestamp_str):
-    import pandas
-    x = timestamp_str.split(' ')
-    timestamp = pandas.Timestamp(' '.join([x[0].replace(':', '-'), x[1]]))
-    return timestamp
+    import time
+    import collections
+
+    fields = ['year', 'month', 'day']
+    TimeTuple = collections.namedtuple('TimeTuple', fields)
+    t = time.strptime(timestamp_str, '%Y:%m:%d %H:%M:%S')
+    return TimeTuple(t.tm_year, t.tm_mon, t.tm_mday)
 
 
 def get_metadata(filepath):

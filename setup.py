@@ -7,9 +7,9 @@ Usage:
 
 from setuptools import setup
 
-APP = []
-DATA_FILES = ['sorter_gui']
-OPTIONS = {'argv_emulation': True}
+APP = ['sorter_gui.py']
+DATA_FILES = []
+OPTIONS = {'argv_emulation': True, 'includes': ['sip', 'PyQt4']}
 
 setup(
     app=APP,
