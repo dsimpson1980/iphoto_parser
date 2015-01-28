@@ -145,7 +145,9 @@ def MainWindow(app):
 def main():
     app = QtGui.QApplication(sys.argv)
     sorter_gui = SorterGUI()
-    MainWindow(app)
+    main_app = MainWindow(app)
+    main_app.show()
+    main_app.raise_()
 
 if __name__ == '__main__':
     logging.basicConfig(level='INFO')
