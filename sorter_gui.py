@@ -13,7 +13,7 @@ class QtHandler(logging.Handler):
 
     def emit(self, record):
         record = self.format(record)
-        if record: XStream.stdout().write('%s\n'%record)
+        if record: XStream.stdout().write('%s\n' % record)
         # originally: XStream.stdout().write("{}\n".format(record))
 
 
@@ -118,12 +118,23 @@ class MyWidget(QtGui.QWidget):
         XStream.stdout().messageWritten.connect(self._console.insertPlainText)
         XStream.stderr().messageWritten.connect(self._console.insertPlainText)
 
-    def parse_lib(self):
+        # Thread
+        self.bee = Worker(self.someProcess, ())
+        self.bee.finished.connect(self.restoreUi)
+        self.bee.terminated.connect(self.restoreUi)
+
+    def someProcess(self):
         fields = ['source_path', 'export_dir', 'filter_by_model']
         Args = collections.namedtuple('Args', fields)
         args = Args(str(self.source_qle.text()), str(self.target_qle.text()),
                     self.filter_by_model.isChecked())
         sorter.parse_files(args)
+
+    def restoreUi(self):
+        self.button.setEnabled(True)
+
+    def parse_lib(self):
+        self.bee.start()
 
     def select_lib(self):
         filepath = QtGui.QFileDialog.getOpenFileName(
@@ -136,6 +147,16 @@ class MyWidget(QtGui.QWidget):
             self, 'Select USB Drive Location', self.target_qle.text())
         self.target_qle.setText(dirpath)
         logging.info('Set target directory to %s', self.source_qle.text())
+
+
+class Worker(QtCore.QThread):
+    def __init__(self, func, args):
+        super(Worker, self).__init__()
+        self.func = func
+        self.args = args
+
+    def run(self):
+        self.func(*self.args)
 
 
 def MainWindow(app):
