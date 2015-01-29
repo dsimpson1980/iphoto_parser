@@ -57,7 +57,7 @@ class SorterGUI(QtGui.QMainWindow):
 
         self.setToolTip('This is a <b>QWidget</b> widget')
         self.setCentralWidget(MyWidget())
-        self.setGeometry(300, 300, 600, 150)
+        self.setGeometry(300, 300, 600, 400)
         self.setWindowTitle('Tooltips')
         self.show()
 
@@ -115,13 +115,17 @@ class MyWidget(QtGui.QWidget):
 
         self.setLayout(vbox)
 
-        XStream.stdout().messageWritten.connect(self._console.insertPlainText)
-        XStream.stderr().messageWritten.connect(self._console.insertPlainText)
+        XStream.stdout().messageWritten.connect(self.write_log)
+        XStream.stderr().messageWritten.connect(self.write_log)
 
         # Thread
         self.bee = Worker(self.someProcess, ())
         self.bee.finished.connect(self.restoreUi)
         self.bee.terminated.connect(self.restoreUi)
+
+    def write_log(self, str):
+        self._console.insertPlainText(str)
+        self._console.moveCursor(QtGui.QTextCursor.End)
 
     def someProcess(self):
         fields = ['source_path', 'export_dir', 'filter_by_model']
