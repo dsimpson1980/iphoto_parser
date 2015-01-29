@@ -118,16 +118,15 @@ class MyWidget(QtGui.QWidget):
         XStream.stdout().messageWritten.connect(self.write_log)
         XStream.stderr().messageWritten.connect(self.write_log)
 
-        # Thread
-        self.bee = Worker(self.someProcess, ())
-        self.bee.finished.connect(self.restoreUi)
-        self.bee.terminated.connect(self.restoreUi)
+        self.thread = Worker(self.parseFiles, ())
+        self.thread.finished.connect(self.restoreUi)
+        self.thread.terminated.connect(self.restoreUi)
 
     def write_log(self, str):
         self._console.insertPlainText(str)
         self._console.moveCursor(QtGui.QTextCursor.End)
 
-    def someProcess(self):
+    def parseFiles(self):
         fields = ['source_path', 'export_dir', 'filter_by_model']
         Args = collections.namedtuple('Args', fields)
         args = Args(str(self.source_qle.text()), str(self.target_qle.text()),
@@ -138,7 +137,7 @@ class MyWidget(QtGui.QWidget):
         self.button.setEnabled(True)
 
     def parse_lib(self):
-        self.bee.start()
+        self.thread.start()
 
     def select_lib(self):
         filepath = QtGui.QFileDialog.getOpenFileName(
